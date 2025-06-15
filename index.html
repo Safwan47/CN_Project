@@ -1,63 +1,64 @@
-<html lang="en"><head>
+<!DOCTYPE html>
+<html lang="en">
+<head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>ESP32 TCP Echo Server</title>
+  <title>DHCP Server Configuration in Packet Tracer</title>
   <link rel="stylesheet" href="style.css">
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
-  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&amp;family=Fira+Code&amp;display=swap" rel="stylesheet">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&family=Fira+Code&display=swap" rel="stylesheet">
 </head>
 <body>
   <header>
-    <h1>ESP32 TCP Server</h1>
-    <nav>
-      <a href="index.html" class="active">Overview</a>
-      <a href="gallery.html">Gallery</a>
-      <a href="code.html">Code</a>
-      <a href="breakdown.html">Breakdown</a>
-    </nav>
+    <h1>DHCP Server Configuration</h1>
   </header>
 
   <main class="container">
     <section class="card">
       <h2>🚀 Project Overview</h2>
-      <p>Welcome to this in-depth guide on creating a reliable TCP Echo Server using the powerful ESP32 microcontroller and the ESP-IDF framework. An "echo server" is a fundamental networking tool that simply sends back any data it receives. This project serves as a perfect starting point for understanding network programming on an embedded device and forms the backbone for more complex applications like IoT data loggers, remote controllers, and lightweight messaging systems.</p>
+      <p>This project demonstrates how to configure a <strong>DHCP server within a router</strong> using Cisco Packet Tracer. DHCP (Dynamic Host Configuration Protocol) automatically assigns IP addresses to devices in a network, simplifying network management. This setup eliminates the need to manually configure IPs for each client device.</p>
 
-       <h3>✨ Key Features</h3>
+      <h3>✨ Key Components</h3>
       <ul>
-        <li><strong>Event-Driven Architecture:</strong> Built on the robust ESP-IDF event loop to handle Wi-Fi and IP events asynchronously.</li>
-        <li><strong>Reliable TCP Stream:</strong> Utilizes the Transmission Control Protocol (TCP) for error-checked, in-order data delivery.</li>
-        <li><strong>FreeRTOS Multitasking:</strong> The TCP server runs in its own dedicated task, ensuring the system remains responsive.</li>
-        <li><strong>Wi-Fi Station Mode:</strong> The ESP32 connects to an existing Access Point (AP) like your home router to join the local network.</li>
+        <li><strong>Router:</strong> Acts as the DHCP server.</li>
+        <li><strong>Switch:</strong> Connects all devices in the LAN.</li>
+        <li><strong>End Devices:</strong> Includes 2 laptops and 3 PCs as DHCP clients.</li>
+        <li><strong>Subnet:</strong> 192.168.0.0/16 (Subnet mask: 255.255.0.0)</li>
+        <li><strong>Gateway:</strong> 192.168.0.1</li>
       </ul>
 
-      <h3>📡 How TCP Really Works: The 3-Way Handshake</h3>
-      <p>TCP (Transmission Control Protocol) is the gold standard for reliable communication. Before any data is sent, it establishes a solid connection using a process called the "3-way handshake":</p>
+      <h3>🔧 Configuration Steps</h3>
       <ol>
-        <li><strong>SYN:</strong> The client (your PC) sends a "synchronize" packet (SYN) to the server (the ESP32) to initiate a connection.</li>
-        <li><strong>SYN-ACK:</strong> The ESP32 receives the SYN and sends back a "synchronize-acknowledgment" packet (SYN-ACK) to confirm it's ready.</li>
-        <li><strong>ACK:</strong> The client receives the SYN-ACK and sends a final "acknowledgment" packet (ACK). The connection is now established, and data can flow freely and reliably in both directions.</li>
+        <li>Assign a static IP address to the router interface (e.g., <code>192.168.0.1</code>).</li>
+        <li>Enable the DHCP service on the router.</li>
+        <li>Create a DHCP pool with:
+          <ul>
+            <li><code>network 192.168.0.0 255.255.0.0</code></li>
+            <li><code>default-router 192.168.0.1</code></li>
+            <li><code>dns-server 8.8.8.8</code> (optional)</li>
+          </ul>
+        </li>
+        <li>Set end devices (PCs/laptops) to use DHCP in their IP configuration.</li>
       </ol>
-      <p>This process guarantees that both devices are ready and able to communicate before any data is lost.</p>
 
-      <h3>🛠️ What is Netcat? A Networking Swiss Army Knife</h3>
-      <p>Netcat (often invoked as <code>nc</code>) is a versatile command-line utility for reading and writing data across network connections. It's an essential tool for any network developer because it can create nearly any kind of connection you might need. For this project, it's the perfect way to act as a client and test our ESP32 server.</p>
+      <h3>📡 What Happens in the Network</h3>
+      <p>Once configured, each device sends a <strong>DHCP Discover</strong> message. The router responds with an IP lease, giving each device a unique IP address along with subnet and gateway info. This allows seamless communication between devices.</p>
 
-      <h3>📶 How to Connect and Test</h3>
+      <h3>🧪 Test Procedure</h3>
       <ol>
-        <li><strong>Flash &amp; Power On:</strong> Compile and flash the firmware onto your ESP32 board and power it up.</li>
-        <li><strong>Monitor Serial Output:</strong> Open a serial monitor (like the one in VS Code or Arduino IDE) to see the ESP32's log messages. Wait for it to connect to your Wi-Fi and print its IP address. It will look something like this: <code>I (5586) example: got ip:192.168.1.103</code>.</li>
-        <li><strong>Connect with Netcat:</strong> Open a terminal on your computer and type the following command, replacing the IP with the one from your serial monitor:
-          <pre><code>nc 192.168.1.103 3333</code></pre></li>
-        <li><strong>Echo Test:</strong> You're now connected! Type any message (e.g., "Hello ESP32!") and press Enter. The server will receive the message and immediately send it back to your terminal. This confirms the entire system is working correctly.</li>
+        <li>Use the <strong>IP Configuration</strong> tab on each PC to confirm they received an IP via DHCP.</li>
+        <li>Open the <strong>Command Prompt</strong> on a PC and use <code>ping</code> to test connectivity with another PC.</li>
+        <li>Try pinging the default gateway <code>192.168.0.1</code> to ensure router communication.</li>
       </ol>
+
+      <h3>✅ Outcome</h3>
+      <p>All devices successfully obtain IP addresses automatically from the router. Network communication is verified through successful pings, confirming the DHCP setup is functional.</p>
     </section>
   </main>
 
   <footer>
-    <p>© 2025 Made by Adityakrishna Vinod , Abhinav KL, Ardra R Nair, Snigdha Sivakumar, Unnikrishnan Jayan — <a href="https://github.com/a-Lucar-d/my-website">View on GitHub</a></p>
+    <p>By Teammates</p>
   </footer>
-
-
-
-</body></html>
+</body>
+</html>
