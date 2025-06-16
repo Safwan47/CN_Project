@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>DHCP Server Configuration in Packet Tracer</title>
+  <title>Inter-VLAN Routing in Packet Tracer</title>
   <link rel="stylesheet" href="style.css">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -11,75 +11,76 @@
 </head>
 <body>
   <header>
-    <h1>DHCP Server Configuration</h1>
+    <h1>Inter-VLAN Routing using Router-on-a-Stick</h1>
   </header>
 
   <main class="container">
     <section class="card">
       <h2>🚀 Project Overview</h2>
-      <p>This project demonstrates how to configure a <strong>DHCP server within a router</strong> using Cisco Packet Tracer. DHCP (Dynamic Host Configuration Protocol) automatically assigns IP addresses to devices in a network, simplifying network management. This setup eliminates the need to manually configure IPs for each client device.</p>
+      <p>This project demonstrates the implementation of <strong>Inter-VLAN Routing using Router-on-a-Stick</strong> in Cisco Packet Tracer. VLANs help logically segment a network into isolated broadcast domains. Using a single physical router interface with subinterfaces, we enable communication between VLANs.</p>
 
       <h3>✨ Key Components</h3>
       <ul>
-        <li><strong>Router:</strong> Acts as the DHCP server.</li>
-        <li><strong>Switch:</strong> Connects all devices in the LAN.</li>
-        <li><strong>End Devices:</strong> Includes 2 laptops and 3 PCs as DHCP clients.</li>
-        <li><strong>Subnet:</strong> 192.168.0.0/16 (Subnet mask: 255.255.0.0)</li>
-        <li><strong>Gateway:</strong> 192.168.0.1</li>
+        <li><strong>Layer 2 Switch:</strong> Configured with VLANs 10, 20, and 30.</li>
+        <li><strong>Router:</strong> Configured with subinterfaces for each VLAN.</li>
+        <li><strong>End Devices:</strong> PCs and laptops assigned to different VLANs.</li>
+        <li><strong>Trunk Link:</strong> Between the router and the switch using 802.1Q encapsulation.</li>
+        <li><strong>Subnetting:</strong> 
+          <ul>
+            <li>VLAN 10 – 192.168.10.0/24</li>
+            <li>VLAN 20 – 192.168.20.0/24</li>
+            <li>VLAN 30 – 192.168.30.0/24</li>
+          </ul>
+        </li>
       </ul>
 
       <h3>🔧 Configuration Steps</h3>
       <ol>
-        <li>Assign a static IP address to the router interface (e.g., <code>192.168.0.1</code>).</li>
-        <li>Enable the DHCP service on the router.</li>
-        <li>Create a DHCP pool with:
+        <li>Create VLANs on the switch and assign ports.</li>
+        <li>Configure trunk port on the switch (e.g., <code>switchport mode trunk</code>).</li>
+        <li>Configure router subinterfaces:
           <ul>
-            <li><code>network 192.168.0.0 255.255.0.0</code></li>
-            <li><code>default-router 192.168.0.1</code></li>
-            <li><code>dns-server 8.8.8.8</code> (optional)</li>
+            <li><code>interface Gig0/0.10</code></li>
+            <li><code>encapsulation dot1Q 10</code></li>
+            <li><code>ip address 192.168.10.1 255.255.255.0</code></li>
+            <li>Repeat for VLANs 20 and 30</li>
           </ul>
         </li>
-        <li>Set end devices (PCs/laptops) to use DHCP in their IP configuration.</li>
+        <li>Assign static IP addresses to end devices.</li>
       </ol>
 
       <h3>📡 What Happens in the Network</h3>
-      <p>Once configured, each device sends a <strong>DHCP Discover</strong> message. The router responds with an IP lease, giving each device a unique IP address along with subnet and gateway info. This allows seamless communication between devices.</p>
+      <p>Each device is connected to its respective VLAN. When it sends traffic to a different VLAN, the packet is tagged, forwarded to the router via the trunk port, and routed through the correct subinterface. The router then sends it back to the switch for delivery to the target VLAN.</p>
 
       <h3>🧪 Test Procedure</h3>
       <ol>
-        <li>Use the <strong>IP Configuration</strong> tab on each PC to confirm they received an IP via DHCP.</li>
-        <li>Open the <strong>Command Prompt</strong> on a PC and use <code>ping</code> to test connectivity with another PC.</li>
-        <li>Try pinging the default gateway <code>192.168.0.1</code> to ensure router communication.</li>
+        <li>Check static IP and default gateway configuration on each PC.</li>
+        <li>Ping devices in the same VLAN to confirm intra-VLAN communication.</li>
+        <li>Ping devices in different VLANs to confirm inter-VLAN routing is successful.</li>
+        <li>Ping router subinterfaces to verify Layer 3 routing.</li>
       </ol>
 
       <h3>✅ Outcome</h3>
-      <p>All devices successfully obtain IP addresses automatically from the router. Network communication is verified through successful pings, confirming the DHCP setup is functional.</p>
+      <p>Devices in different VLANs successfully communicated with each other. The router-on-a-stick setup using subinterfaces enabled inter-VLAN routing through a single router port, confirming correct trunking and IP configuration.</p>
+    </section>
+
+    <section class="card">
+      <h2>📷 Simulation & Results</h2>
+      <div class="image-grid">
+        <figure>
+          <img src="Simulation_1.png" alt="Network Configuration">
+          <figcaption>Network Configuration</figcaption>
+        </figure>
+        <figure>
+          <img src="Simulation_2.png" alt="Packet Sent Screenshot">
+          <figcaption>Packet Sent Screenshot</figcaption>
+        </figure>
+      </div>
     </section>
   </main>
-<section class="card">
-  <h2>📷 Simulation & Results</h2>
-  <div class="image-grid">
-    <figure>
-      <img src="images/simulation1.png" alt="Simulation Screenshot 1">
-      <figcaption>DHCP IP assignment for PC0</figcaption>
-    </figure>
-    <figure>
-      <img src="images/simulation2.png" alt="Simulation Screenshot 2">
-      <figcaption>Packet flow verification</figcaption>
-    </figure>
-    <figure>
-      <img src="images/simulation3.png" alt="Simulation Screenshot 3">
-      <figcaption>Ping test between PCs</figcaption>
-    </figure>
-    <figure>
-      <img src="images/simulation4.png" alt="Simulation Screenshot 4">
-      <figcaption>Router configuration terminal</figcaption>
-    </figure>
-  </div>
-</section>
 
   <footer>
-    <p>By Teammates</p>
+    <p>By Team: Adwaith L, Ananthu A C, Adwaith U, Gouri R Nair, Safwan Muhammed</p>
   </footer>
 </body>
 </html>
